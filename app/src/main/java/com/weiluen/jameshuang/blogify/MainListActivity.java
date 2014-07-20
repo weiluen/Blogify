@@ -1,13 +1,14 @@
 package com.weiluen.jameshuang.blogify;
 
 import android.app.ListActivity;
-import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -25,14 +26,25 @@ public class MainListActivity extends ListActivity {
         setContentView(R.layout.activity_main_list);
         try {
             URL blogFeedUrl = new URL("http://blog.teamtreehouse.com/api/get_recent_summary/?count=" + NUMBER_OF_POSTS);
+            HttpURLConnection connection = (HttpURLConnection) blogFeedUrl.openConnection();
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            Log.i(TAG, "blog: " +  responseCode);
         }
         catch (MalformedURLException e ) {
+            Log.e(TAG, "Exception Caught: ", e);
+        }
+        catch (IOException e) {
+            Log.e(TAG, "Exception Caught: ", e);
+        }
+        catch (Exception e ) {
             Log.e(TAG, "Exception Caught: ", e);
         }
 
         //Can't get the .getStringArray method from activity it is a subclass of resources so make a new resources object.
 
-        Resources resources = getResources();
+        /*Resources resources = getResources();
         mBlogPostTitles = resources.getStringArray(R.array.android_names);
 
         //Create an ArrayAdapter to adapt an array
@@ -41,7 +53,7 @@ public class MainListActivity extends ListActivity {
         setListAdapter(adapter);
 
         //Code to test Toasts!
-        //Toast.makeText(this, getString(R.string.no_items), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, getString(R.string.no_items), Toast.LENGTH_LONG).show(); */
     }
 
 
@@ -62,5 +74,13 @@ public class MainListActivity extends ListActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class GetBlogPostsTask extends AsyncTask<Object, Object, Object> {
+
+        @Override
+        protected String doInBackground(Object... arg0) {
+            return null;
+        }
     }
 }
